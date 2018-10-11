@@ -1,5 +1,8 @@
 #include "airport.hpp"
-#include "random.hpp"
+#include <cstdlib>
+#include <iostream>
+
+using namespace std;
 
 // 请在这里完成Airport类的全部函数。
 
@@ -52,11 +55,11 @@ void Airport::step(int newlanding, int newdeparture) {
 	for (int p = 0; p < newdeparture; p++) {
 		Plane pl(totalPlanes, time_elapsed, takeoff, this);
 
-		int minused = runways[0].getLandingLength();
+		int minused = runways[0].getTakeoffLength();
 		int minidx = 0;
 		for (int i = 0; i < runway_count; i++) {
-			if (runways[i].getLandingLength() < minused) {
-				minused = runways[i].getLandingLength();
+			if (runways[i].getTakeoffLength() < minused) {
+				minused = runways[i].getTakeoffLength();
 				minidx = i;
 			}
 		}
@@ -71,6 +74,54 @@ void Airport::step(int newlanding, int newdeparture) {
 	}
 }
 
+int Poisson(double mean) {
+	srand(time(NULL));
+	double limit = exp(-mean);
+    double product = rand() / RAND_MAX;
+    int count = 0;
+    while (product > limit) {
+        count++;
+        product *= rand() / RAND_MAX;
+    }
+    return count;
+}
+
 void Airport::step() {
-	// Poisson
+	step(Poisson(arrival_rate), Poisson(departure_rate));
+}
+
+void Airport::printSummary() {
+	cout << "截至第" << time_elapsed << "分钟的机场模拟报告如下:" << endl;
+	cout << "一共处理飞机" << totalPlanes << "架" << endl;
+	cout << "\t-- 降落" << landingRequestPlanes << "架" << endl;
+	cout << "\t-- 起飞" << departureRequestPlanes << "架" << endl;
+	cout << "在这些飞机中，本场一共接受了" << acceptedPlanes << "架，拒绝了" << rejectedPlanes << "架" << endl;
+	cout << "目前为止，一共有" << landedPlanes + departuredPlanes << "架飞机完成了任务" << endl;
+	cout << "\t-- 降落完成" << landedPlanes << "架" << endl;
+	cout << "\t-- 起飞完成" << departuredPlanes << "架" << endl;
+}
+
+void Airport::reportMayday(int runway_no, int flt_no) {
+	Plane pl;
+	runways[runway_no].retriveAndDeletePlane(flt_no, &pl);
+
+	int minused = runways[0].getMaydayLength();
+	int minidx = 0;
+	for (int i = 0; i < runway_count; i++) {
+		if (runways[i].getMaydayLength() < minused) {
+			minused = runways[i].getMaydayLength();
+			minidx = i;
+		}
+	}
+
+	if (runways[minidx].can_depart(pl) == success) {
+		pl.setRunwayNo(minidx);
+	}
+
+	runways[minidx].Mayday(pl);
+}
+
+void Airport::reportCrash(int runway_no, int flt_no) {
+	Plane pl;
+	runways[runway_no].retriveAndDeletePlane(flt_no, &pl);
 }
