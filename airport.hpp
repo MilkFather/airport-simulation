@@ -25,13 +25,13 @@ private:
 
 public:
 	// Airport 的生成函数，在这里定义包含的跑道的数量
-	Airport(int runway_count);
+	Airport(int runway_count, int runway_limit);
 	// Airport 模拟前应当进行调用。在这里，所有跑道清空，统计数据全部清零，并且设定好一些参数。
 	void initialize();
 	// 两个模拟函数，都会模拟一个单位时间的情况。前者将使用Random类当中的泊松分布进行模拟，后者手动给定数据进行模拟。
 	// 如果需要连续模拟n个单位时间，请使用循环，或者自行考虑新增一个函数。
 	void step();
-	void step(int newlanding, int newdeparture, int newmayday);
+	void step(int newlanding, int newdeparture);
 	// 在屏幕上显示到目前为止的所有统计情况。
 	void printSummary();
 

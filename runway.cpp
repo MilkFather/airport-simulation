@@ -4,8 +4,6 @@
 using namespace std;
 
 Runway::Runway(int limit) {
-    /*
-     */
     queue_limit = limit;
     num_land_requests = num_takeoff_requests = 0;
     num_landings = num_takeoffs = 0;
@@ -15,8 +13,6 @@ Runway::Runway(int limit) {
 }
 
 Error_code Runway::can_land(const Plane &current) {
-    /*
-     */
     Error_code result;
     if (landing.size() < queue_limit)
         result = landing.append(current);
@@ -31,8 +27,6 @@ Error_code Runway::can_land(const Plane &current) {
 }
 
 Error_code Runway::can_depart(const Plane &current) {
-    /*
-     */
     Error_code result;
     if (takeoff.size() < queue_limit)
         result = takeoff.append(current);
@@ -46,14 +40,14 @@ Error_code Runway::can_depart(const Plane &current) {
     return result;
 }
 
-Runway_activity Runway::activity(int time, Plane &moving) {
+Runway_activity Runway::activity(int time) {
     /*
-    moving是交还给调用者的，返回值是Runway_activity。这一个函数同时返回了两个值，不要误解了。
     TODO：加入对于Mayday队列的逻辑
      */
     Runway_activity in_progress;
+    Plane moving;
     if (!landing.empty()) {
-        // 取降落队列的头，赋值给实参moving，这样调用者就可以得到它
+        // 取降落队列的头，赋值moving，然后对moving进行操作
         landing.retrive(moving);
         // 更新统计数据
         land_wait += time - moving.started();
@@ -62,6 +56,7 @@ Runway_activity Runway::activity(int time, Plane &moving) {
         in_progress = land;
         // 将降落队列的头pop掉
         landing.serve();
+        moving.land();
     } else if (!takeoff.empty()) {
         // 代码思路类似
         takeoff.retrive(moving);
@@ -69,6 +64,7 @@ Runway_activity Runway::activity(int time, Plane &moving) {
         num_takeoffs++;
         in_progress = Runway_activity::takeoff;
         takeoff.serve();
+        moving.depart();
     } else {
         idle_time++;
         in_progress = idle;

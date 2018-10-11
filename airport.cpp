@@ -1,4 +1,5 @@
 #include "airport.hpp"
+#include "random.hpp"
 
 // 请在这里完成Airport类的全部函数。
 
@@ -16,3 +17,60 @@
 
 更新统计数据。
 */
+
+Airport::Airport(int runway_count, int runway_limit) {
+	runways.clear()
+	for (int i = 0; i < runway_count; i++) {
+		Runway new_runway = new Runway(runway_limit);
+		runways.push_back(new_runway);
+	}
+}
+
+void Airport::initialize() {
+	// TODO
+}
+
+void Airport::step(int newlanding, int newdeparture) {
+	for (int p = 0; p < newlanding; p++) {
+		Plane pl(totalPlanes, time_elapsed, arriving, this);
+
+		int minused = runways[0].getLandingLength();
+		int minidx = 0;
+		for (int i = 0; i < runway_count; i++) {
+			if (runways[i].getLandingLength() < minused) {
+				minused = runways[i].getLandingLength();
+				minidx = i;
+			}
+		}
+
+		if (runways[i].can_land(pl) == success) {
+			pl.setRunwayNo(i);
+
+		}
+	}
+
+	for (int p = 0; p < newdeparture; p++) {
+		Plane pl(totalPlanes, time_elapsed, takeoff, this);
+
+		int minused = runways[0].getLandingLength();
+		int minidx = 0;
+		for (int i = 0; i < runway_count; i++) {
+			if (runways[i].getLandingLength() < minused) {
+				minused = runways[i].getLandingLength();
+				minidx = i;
+			}
+		}
+
+		if (runways[i].can_depart(pl) == success) {
+			pl.setRunwayNo(i);
+		}
+	}
+
+	for (int i = 0; i < runway_count; p++) {
+		runways[i].activity(time_elapsed);
+	}
+}
+
+void Airport::step() {
+	// Poisson
+}
