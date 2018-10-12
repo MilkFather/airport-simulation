@@ -46,7 +46,7 @@ void Airport::step(int newlanding, int newdeparture) {
 			}
 		}
 
-		if (runways[i].can_land(pl) == success) {
+		if (runways[i].try_land_queue(pl)) {
 			pl.setRunwayNo(i);
 
 		}
@@ -64,7 +64,7 @@ void Airport::step(int newlanding, int newdeparture) {
 			}
 		}
 
-		if (runways[i].can_depart(pl) == success) {
+		if (runways[i].try_depart_queue(pl)) {
 			pl.setRunwayNo(i);
 		}
 	}
@@ -90,20 +90,10 @@ void Airport::step() {
 	step(Poisson(arrival_rate), Poisson(departure_rate));
 }
 
-void Airport::printSummary() {
-	cout << "截至第" << time_elapsed << "分钟的机场模拟报告如下:" << endl;
-	cout << "一共处理飞机" << totalPlanes << "架" << endl;
-	cout << "\t-- 降落" << landingRequestPlanes << "架" << endl;
-	cout << "\t-- 起飞" << departureRequestPlanes << "架" << endl;
-	cout << "在这些飞机中，本场一共接受了" << acceptedPlanes << "架，拒绝了" << rejectedPlanes << "架" << endl;
-	cout << "目前为止，一共有" << landedPlanes + departuredPlanes << "架飞机完成了任务" << endl;
-	cout << "\t-- 降落完成" << landedPlanes << "架" << endl;
-	cout << "\t-- 起飞完成" << departuredPlanes << "架" << endl;
-}
-
 void Airport::reportMayday(int runway_no, int flt_no) {
+	// Mayday 只会出现在landing飞机当中
 	Plane pl;
-	runways[runway_no].retriveAndDeletePlane(flt_no, &pl);
+	runways[runway_no].removePlane_landing(flt_no, &pl);
 
 	int minused = runways[0].getMaydayLength();
 	int minidx = 0;
@@ -114,14 +104,24 @@ void Airport::reportMayday(int runway_no, int flt_no) {
 		}
 	}
 
-	if (runways[minidx].can_depart(pl) == success) {
-		pl.setRunwayNo(minidx);
-	}
+	pl.setRunwayNo(minidx);
 
-	runways[minidx].Mayday(pl);
+	runways[minidx].add_Mayday(pl);
 }
 
 void Airport::reportCrash(int runway_no, int flt_no) {
+	// Crash 只会出现在Mayday飞机当中
 	Plane pl;
-	runways[runway_no].retriveAndDeletePlane(flt_no, &pl);
+	runways[runway_no].removePlane_mayday(flt_no, &pl);
+}
+
+void Airport::printSummary() {
+	cout << "截至第" << time_elapsed << "分钟的机场模拟报告如下:" << endl;
+	cout << "一共处理飞机" << totalPlanes << "架" << endl;
+	cout << "\t-- 降落" << landingRequestPlanes << "架" << endl;
+	cout << "\t-- 起飞" << departureRequestPlanes << "架" << endl;
+	cout << "在这些飞机中，本场一共接受了" << acceptedPlanes << "架，拒绝了" << rejectedPlanes << "架" << endl;
+	cout << "目前为止，一共有" << landedPlanes + departuredPlanes << "架飞机完成了任务" << endl;
+	cout << "\t-- 降落完成" << landedPlanes << "架" << endl;
+	cout << "\t-- 起飞完成" << departuredPlanes << "架" << endl;
 }
