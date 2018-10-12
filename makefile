@@ -1,5 +1,5 @@
-build : main.o plane.o runway.o random.o exqueue.o
-	g++ -std=c++11 -o "airport" main.o plane.o runway.o random.o exqueue.o
+build : main.o airport.o plane.o runway.o
+	g++ -std=c++11 -o "airport" main.o airport.o plane.o runway.o
 
 main.o : main.cpp
 	g++ -std=c++11 -c main.cpp

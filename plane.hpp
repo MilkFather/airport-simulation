@@ -9,8 +9,7 @@ enum Plane_status {null, arriving, departing};
 
 class Plane {
 private:
-    // 飞机的航班号，生成的时间点和其状态（降落 or 起飞）
-    int flt_num;
+    // 飞机的生成的时间点和其状态（降落 or 起飞）
     int clock_start;
     Plane_status state;
 
@@ -26,6 +25,8 @@ private:
     CommunicationProtocal *host;
 
 public:
+    // 飞机的航班号
+    int flt_num;
     // Plane的生成函数。其中空的那个写出来是为了防止程序错误而设置的保护措施，但是正常运行中不应该调用它。
     Plane();
     Plane(int flt, int time, Plane_status status, CommunicationProtocal *port);

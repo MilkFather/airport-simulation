@@ -6,8 +6,6 @@
 using namespace std;
 
 void initialize(int &end_time, int &queue_limit, double &arrival_rate, double &departure_rate) {
-    /*
-     */
     cout << "This program simulates an airport with only one runway." << endl << "One plane can land or depart in each unit of time." << endl;
     cout << "Up to what number of planes can be waiting to land " << "or take off at any time? " << flush;
     cin >> queue_limit;
@@ -33,6 +31,10 @@ void run_idle(int time) {
 }
 
 int main() {            // 机场模拟程序
-
+    Airport test(3, 15);
+    test.step();
+    test.step();
+    test.step();
+    test.printSummary();
     return 0;
 }

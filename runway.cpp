@@ -8,18 +8,18 @@ Runway::Runway(int limit) {
 }
 
 bool Runway::try_land_queue(const Plane &current) {
-    if (landing.size() < queue_limit)
+    if (landing.size() < queue_limit) {
         landing.push(current);
         return true;
-    else
+    } else
         return false;
 }
 
 bool Runway::try_depart_queue(const Plane &current) {
-    if (takeoff.size() < queue_limit)
+    if (takeoff.size() < queue_limit) {
         takeoff.push(current);
         return true;
-    else
+    } else
         return false;
 }
 
@@ -36,13 +36,13 @@ bool Runway::try_depart_queue(const Plane &current) {
         //in_progress = land;
         // 将降落队列的头pop掉
         landing.pop();
-        moving.land();
+        moving.land(time);
     } else if (!takeoff.empty()) {
         // 代码思路类似
         moving = takeoff.front();
         //in_progress = Runway_activity::takeoff;
         takeoff.pop();
-        moving.depart();
+        moving.fly(time);
     } else {
         //in_progress = idle;
     }
@@ -53,7 +53,7 @@ void Runway::removePlane_takeoff(int flt_no, Plane &pl) {
 	vector<Plane> temp;
 	int size = takeoff.size();
 	for (int i = 0; i < size; i++) {
-		temp.push(takeoff.front());//将队列清空，并转移到一个数组里面，便于检索
+		temp.push_back(takeoff.front());//将队列清空，并转移到一个数组里面，便于检索
 		takeoff.pop();
 	}
 
@@ -75,7 +75,7 @@ void Runway::removePlane_landing(int flt_no, Plane &pl) {
 	vector<Plane> temp;
 	int size = landing.size();
 	for (int i = 0; i < size; i++) {
-		temp.push(landing.front());//将队列清空，并转移到一个数组里面，便于检索
+		temp.push_back(landing.front());//将队列清空，并转移到一个数组里面，便于检索
 		landing.pop();
 	}
 
@@ -97,7 +97,7 @@ void Runway::removePlane_mayday(int flt_no, Plane &pl) {
 	vector<Plane> temp;
 	int size = mayday.size();
 	for (int i = 0; i < size; i++) {
-		temp.push(mayday.front()); //将队列清空，并转移到一个数组里面，便于检索
+		temp.push_back(mayday.front()); //将队列清空，并转移到一个数组里面，便于检索
 		mayday.pop();
 	}
 

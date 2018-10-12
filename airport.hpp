@@ -15,7 +15,6 @@ private:
 	vector<Runway> runways;
 	int time_elapsed;
 
-
 	// 用于随机数生成的参数
 	double arrival_rate, departure_rate;  // 产生降落飞机和离场飞机的频率
 	int runway_limit;
@@ -42,7 +41,7 @@ public:
 	// 供飞机调用
 	void reportMayday(int runway_no, int flt_no);
 	void reportCrash(int runway_no, int flt_no);
-	
+
 };
 
 #endif

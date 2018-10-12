@@ -6,8 +6,6 @@ using namespace std;
 // Plane类的实现。可以考虑在现有代码基础上进行更改。
 
 Plane::Plane(int flt, int time, Plane_status status, CommunicationProtocal *port) {
-    /*
-     */
     flt_num = flt;
     clock_start = time;
     state = status;
@@ -20,8 +18,6 @@ Plane::Plane(int flt, int time, Plane_status status, CommunicationProtocal *port
 }
 
 Plane::Plane() {
-    /*
-     */
     flt_num = -1;
     clock_start = -1;
     state = null;
@@ -51,4 +47,8 @@ int Plane::started() const {
 
 bool Plane::isMayday() const {
     return Mayday;
+}
+
+void Plane::setRunwayNo(int no) {
+    runway_no = no;
 }
