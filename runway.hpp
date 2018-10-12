@@ -40,7 +40,9 @@ public:
     // 跑道的终止操作。目前这里是用来进行统计数据的输出的。
     void shut_down(int time) const;
     // 从跑道的队列中移除指定编号的飞机
-    void removePlane(int flt_no);
+	void Runway::removePlane_takeoff(int flt_no);
+	void Runway::removePlane_landing(int flt_no);
+	void Runway::removePlane_mayday(int flt_no);
 
     // 信息方法。
     int getRunwayLimit() const;
