@@ -2,10 +2,14 @@
 #define AIRPORT_HPP
 
 #import "runway.hpp"
+#import "delegate.hpp"
+#import <vector>
+
+using namespace std;
 
 // Airport 类
 // 这里进行了定义与实现的分离，请在airport.cpp文件中实现该类的函数。
-class Airport {
+class Airport: public CommunicationProtocal {
 private:
 	// 虚拟的跑道和虚拟的时间
 	vector<Runway> runways;
@@ -38,6 +42,7 @@ public:
 	// 供飞机调用
 	void reportMayday(int runway_no, int flt_no);
 	void reportCrash(int runway_no, int flt_no);
-}
+	
+};
 
 #endif

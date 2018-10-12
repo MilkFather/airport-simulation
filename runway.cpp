@@ -9,7 +9,7 @@ Runway::Runway(int limit) {
 
 bool Runway::try_land_queue(const Plane &current) {
     if (landing.size() < queue_limit)
-        landing.push_back(current);
+        landing.push(current);
         return true;
     else
         return false;
@@ -17,43 +17,43 @@ bool Runway::try_land_queue(const Plane &current) {
 
 bool Runway::try_depart_queue(const Plane &current) {
     if (takeoff.size() < queue_limit)
-        takeoff.push_back(current);
+        takeoff.push(current);
         return true;
     else
         return false;
 }
 
-Runway_activity Runway::activity(int time) {
+/*Runway_activity*/void Runway::activity(int time) {
     /*
     TODO：加入对于Mayday队列的逻辑
      */
-    Runway_activity in_progress;
+    //Runway_activity in_progress;
     Plane moving;
     if (!landing.empty()) {
         // 取降落队列的头，赋值moving，然后对moving进行操作
         moving = landing.front();
         // 更新状态
-        in_progress = land;
+        //in_progress = land;
         // 将降落队列的头pop掉
         landing.pop();
         moving.land();
     } else if (!takeoff.empty()) {
         // 代码思路类似
         moving = takeoff.front();
-        in_progress = Runway_activity::takeoff;
+        //in_progress = Runway_activity::takeoff;
         takeoff.pop();
         moving.depart();
     } else {
-        in_progress = idle;
+        //in_progress = idle;
     }
-    return in_progress;
+    //return in_progress;
 }
 
 void Runway::removePlane_takeoff(int flt_no, Plane &pl) {
 	vector<Plane> temp;
 	int size = takeoff.size();
 	for (int i = 0; i < size; i++) {
-		temp.push_back(takeoff.front());//将队列清空，并转移到一个数组里面，便于检索
+		temp.push(takeoff.front());//将队列清空，并转移到一个数组里面，便于检索
 		takeoff.pop();
 	}
 
@@ -75,7 +75,7 @@ void Runway::removePlane_landing(int flt_no, Plane &pl) {
 	vector<Plane> temp;
 	int size = landing.size();
 	for (int i = 0; i < size; i++) {
-		temp.push_back(landing.front());//将队列清空，并转移到一个数组里面，便于检索
+		temp.push(landing.front());//将队列清空，并转移到一个数组里面，便于检索
 		landing.pop();
 	}
 
@@ -97,7 +97,7 @@ void Runway::removePlane_mayday(int flt_no, Plane &pl) {
 	vector<Plane> temp;
 	int size = mayday.size();
 	for (int i = 0; i < size; i++) {
-		temp.push_back(mayday.front()); //将队列清空，并转移到一个数组里面，便于检索
+		temp.push(mayday.front()); //将队列清空，并转移到一个数组里面，便于检索
 		mayday.pop();
 	}
 
@@ -132,5 +132,5 @@ int Runway::getMaydayLength() const {
 }
 
 void Runway::add_Mayday(Plane pl) {
-    mayday.push_back(pl);
+    mayday.push(pl);
 }

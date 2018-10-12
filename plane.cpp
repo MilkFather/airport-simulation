@@ -5,7 +5,7 @@ using namespace std;
 
 // Plane类的实现。可以考虑在现有代码基础上进行更改。
 
-Plane::Plane(int flt, int time, Plane_status status) {
+Plane::Plane(int flt, int time, Plane_status status, CommunicationProtocal *port) {
     /*
      */
     flt_num = flt;
@@ -16,6 +16,7 @@ Plane::Plane(int flt, int time, Plane_status status) {
         cout << "land." << endl;
     else
         cout << "take off." << endl;
+    host = port;
 }
 
 Plane::Plane() {

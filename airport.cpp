@@ -1,8 +1,8 @@
 #include "airport.hpp"
+#include "plane.hpp"
 #include <cstdlib>
 #include <iostream>
-
-using namespace std;
+#include <cmath>
 
 // 请在这里完成Airport类的全部函数。
 
@@ -22,9 +22,9 @@ using namespace std;
 */
 
 Airport::Airport(int runway_count, int runway_limit) {
-	runways.clear()
+	runways.clear();
 	for (int i = 0; i < runway_count; i++) {
-		Runway new_runway = new Runway(runway_limit);
+		Runway new_runway(runway_limit);
 		runways.push_back(new_runway);
 	}
 }
@@ -34,6 +34,7 @@ void Airport::initialize() {
 }
 
 void Airport::step(int newlanding, int newdeparture) {
+	int runway_count = runways.size();
 	for (int p = 0; p < newlanding; p++) {
 		Plane pl(totalPlanes, time_elapsed, arriving, this);
 
@@ -46,14 +47,14 @@ void Airport::step(int newlanding, int newdeparture) {
 			}
 		}
 
-		if (runways[i].try_land_queue(pl)) {
-			pl.setRunwayNo(i);
+		if (runways[minidx].try_land_queue(pl)) {
+			pl.setRunwayNo(minidx);
 
 		}
 	}
 
 	for (int p = 0; p < newdeparture; p++) {
-		Plane pl(totalPlanes, time_elapsed, takeoff, this);
+		Plane pl(totalPlanes, time_elapsed, departing, this);
 
 		int minused = runways[0].getTakeoffLength();
 		int minidx = 0;
@@ -64,12 +65,12 @@ void Airport::step(int newlanding, int newdeparture) {
 			}
 		}
 
-		if (runways[i].try_depart_queue(pl)) {
-			pl.setRunwayNo(i);
+		if (runways[minidx].try_depart_queue(pl)) {
+			pl.setRunwayNo(minidx);
 		}
 	}
 
-	for (int i = 0; i < runway_count; p++) {
+	for (int i = 0; i < runway_count; i++) {
 		runways[i].activity(time_elapsed);
 	}
 }
@@ -93,11 +94,11 @@ void Airport::step() {
 void Airport::reportMayday(int runway_no, int flt_no) {
 	// Mayday 只会出现在landing飞机当中
 	Plane pl;
-	runways[runway_no].removePlane_landing(flt_no, &pl);
+	runways[runway_no].removePlane_landing(flt_no, pl);
 
 	int minused = runways[0].getMaydayLength();
 	int minidx = 0;
-	for (int i = 0; i < runway_count; i++) {
+	for (int i = 0; i < runways.size(); i++) {
 		if (runways[i].getMaydayLength() < minused) {
 			minused = runways[i].getMaydayLength();
 			minidx = i;
@@ -112,7 +113,7 @@ void Airport::reportMayday(int runway_no, int flt_no) {
 void Airport::reportCrash(int runway_no, int flt_no) {
 	// Crash 只会出现在Mayday飞机当中
 	Plane pl;
-	runways[runway_no].removePlane_mayday(flt_no, &pl);
+	runways[runway_no].removePlane_mayday(flt_no, pl);
 }
 
 void Airport::printSummary() {

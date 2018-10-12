@@ -1,6 +1,6 @@
 #include "runway.hpp"
 #include "plane.hpp"
-#include "random.hpp"
+#include "airport.hpp"
 #include <iostream>
 
 using namespace std;
@@ -33,6 +33,6 @@ void run_idle(int time) {
 }
 
 int main() {            // 机场模拟程序
-    
+
     return 0;
 }

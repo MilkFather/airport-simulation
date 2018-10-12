@@ -1,7 +1,7 @@
 #ifndef PLANE_HPP
 #define PLANE_HPP
 
-#import "airport.hpp"
+#import "delegate.hpp"
 
 enum Plane_status {null, arriving, departing};
 
@@ -13,28 +13,27 @@ private:
     int flt_num;
     int clock_start;
     Plane_status state;
-    
+
     // Mayday标记。一旦机场遇见了Mayday飞机，机场应当无条件安排其降落，即使降落队列已满也不能拒绝它。每个跑道都有单独针对Mayday飞机的降落队列。请将其安排到那里去。
     bool Mayday;
-    
+
     // 飞机的燃料。初始时请设置一个合适的值（没有标准），每经过一个单位时间飞机的燃料都要减1，一旦剩余燃料数小于等于5，则宣布进入Mayday状态并从原来的等待队列中跳出，按照Mayday流程处理。
     // 燃料归零则宣布坠毁。
     int fuel;
 
     int runway_no;
 
-    Airport *host;
+    CommunicationProtocal *host;
 
-    
 public:
     // Plane的生成函数。其中空的那个写出来是为了防止程序错误而设置的保护措施，但是正常运行中不应该调用它。
     Plane();
-    Plane(int flt, int time, Plane_status status, Airport *port);
+    Plane(int flt, int time, Plane_status status, CommunicationProtocal *port);
     void refuse() const;
     void land(int time) const;
     void fly(int time) const;
     int started() const;
-    
+
     bool isMayday() const;
     void setRunwayNo(int no);
 };

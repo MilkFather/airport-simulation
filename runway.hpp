@@ -4,7 +4,9 @@
 #include "plane.hpp"
 #include <queue>
 
-enum Runway_activity {idle, land, takeoff};
+using namespace std;
+
+//enum Runway_activity {idle, land, takeoff};
 
 class Runway {
 private:
@@ -21,11 +23,11 @@ public:
     bool try_land_queue(const Plane &current);
     bool try_depart_queue(const Plane &current);
     // 进行跑道操作
-    Runway_activity activity(int time);
+    /*Runway_activity*/void activity(int time);
     // 从跑道的队列中移除指定编号的飞机
-	void Runway::removePlane_takeoff(int flt_no, Plane &pl);
-	void Runway::removePlane_landing(int flt_no, Plane &pl);
-	void Runway::removePlane_mayday(int flt_no, Plane &pl);
+	void removePlane_takeoff(int flt_no, Plane &pl);
+	void removePlane_landing(int flt_no, Plane &pl);
+	void removePlane_mayday(int flt_no, Plane &pl);
 
     // 信息方法。
     int getRunwayLimit() const;
