@@ -14,19 +14,6 @@ private:
     Extended_queue mayday;
     int queue_limit;
 
-    // 以下这些都是统计数据
-    int num_land_requests;
-    int num_takeoff_requests;
-    int num_landings;
-    int num_takeoffs;
-    int num_land_accepted;
-    int num_takeoff_accepted;
-    int num_land_refused;
-    int num_takeoff_refused;
-    int land_wait;
-    int takeoff_wait;
-    int idle_time;
-
 public:
     // 构造函数
     Runway(int limit);
@@ -37,8 +24,6 @@ public:
     Error_code can_depart(const Plane &current);
     // 进行跑道操作
     Runway_activity activity(int time);
-    // 跑道的终止操作。目前这里是用来进行统计数据的输出的。
-    void shut_down(int time) const;
     // 从跑道的队列中移除指定编号的飞机
 	void Runway::removePlane_takeoff(int flt_no);
 	void Runway::removePlane_landing(int flt_no);

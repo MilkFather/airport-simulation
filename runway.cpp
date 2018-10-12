@@ -55,9 +55,6 @@ Runway_activity Runway::activity(int time) {
     if (!landing.empty()) {
         // 取降落队列的头，赋值moving，然后对moving进行操作
         landing.retrive(moving);
-        // 更新统计数据
-        land_wait += time - moving.started();
-        num_landings++;
         // 更新状态
         in_progress = land;
         // 将降落队列的头pop掉
@@ -66,13 +63,10 @@ Runway_activity Runway::activity(int time) {
     } else if (!takeoff.empty()) {
         // 代码思路类似
         takeoff.retrive(moving);
-        takeoff_wait += time - moving.started();
-        num_takeoffs++;
         in_progress = Runway_activity::takeoff;
         takeoff.serve();
         moving.depart();
     } else {
-        idle_time++;
         in_progress = idle;
     }
     return in_progress;
@@ -148,23 +142,4 @@ int Runway::getTakeoffLength() const {
 }
 int Runway::getMaydayLength() const {
 	return this->mayday.size();
-}
-void Runway::shut_down(int time) const {
-    cout << "Simulation has concluded after " << time << " time units." << endl;
-    cout << "Total number of planes processed " << (num_land_requests + num_takeoff_requests) << endl;
-    cout << "Total number of planes asking to land " << num_land_requests << endl;
-    cout << "Total number of planes asking to take off " << num_takeoff_requests << endl;
-    cout << "Total number of planes accepted for landing " << num_land_accepted << endl;
-    cout << "Total number of planes accepted for takeoff " << num_takeoff_accepted << endl;
-    cout << "Total number of planes refused for landing " << num_land_refused << endl;
-    cout << "Total number of planes refused for takeoff " << num_takeoff_refused << endl;
-    cout << "Total number of planes that landed " << num_landings << endl;
-    cout << "Total number of planes that took off " << num_takeoffs << endl;
-    cout << "Total number of planes left in the landing queue " << landing.size() << endl;
-    cout << "Total number of planes left in the tookoff queue " << takeoff.size() << endl;
-    cout << "Percentage of time runway idle " << 100.0 * ((float) idle_time) / ((float) time) << "%" << endl;
-    cout << "Average wait in landing queue " << ((float) land_wait) / ((float) num_landings) << " time units" << endl;
-    cout << "Average wait in takeoff queue " << ((float) takeoff_wait) / ((float) num_takeoffs) << " time units" << endl;
-    cout << "Average observed rate of planes wanting to land " << ((float) num_land_requests) / ((float) time) << " per time unit" << endl;
-    cout << "Average observed rate of planes wanting to takeoff " << ((float) num_takeoff_requests) / ((float) time) << " per time unit" << endl;
 }
