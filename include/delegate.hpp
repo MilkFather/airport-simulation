@@ -1,9 +1,13 @@
 #ifndef DELEGATE_HPP
 #define DELEGATE_HPP
 
+#include <string>
+
+using namespace std;
+
 class CommunicationProtocal {
-    virtual void reportMayday(int runway_no, int flt_no) = 0;
-    virtual void reportCrash(int runway_no, int flt_no) = 0;
+public:
+    virtual void report(string msg, int runway_no, int flt_no, ...) = 0;
 };
 
 #endif

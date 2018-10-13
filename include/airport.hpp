@@ -4,6 +4,7 @@
 #import "runway.hpp"
 #import "delegate.hpp"
 #import <vector>
+#import <string>
 
 using namespace std;
 
@@ -38,9 +39,7 @@ public:
 	void printSummary();
 
 	// 供飞机调用
-	void reportMayday(int runway_no, int flt_no);
-	void reportCrash(int runway_no, int flt_no);
-
+	void report(string msg, int runway_no, int flt_no, ...);
 };
 
 #endif

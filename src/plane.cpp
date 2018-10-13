@@ -33,12 +33,14 @@ void Plane::refuse() const {
 
 void Plane::land(int time) const {
     int wait = time - clock_start;
-    cout << time << ": Plane number " << flt_num << " landed after " << wait << " time unit" << ((wait == 1) ? "" : "s") << " in landing queue." << endl;
+    //cout << time << ": Plane number " << flt_num << " landed after " << wait << " time unit" << ((wait == 1) ? "" : "s") << " in landing queue." << endl;
+    host->report("LAND_SUCCESS", runway_no, flt_num, wait);
 }
 
 void Plane::fly(int time) const {
     int wait = time - clock_start;
-    cout << time << ": Plane number " << flt_num << " took off after " << wait << " time unit" << ((wait == 1) ? "" : "s") << " in takeoff queue." << endl;
+    //cout << time << ": Plane number " << flt_num << " took off after " << wait << " time unit" << ((wait == 1) ? "" : "s") << " in takeoff queue." << endl;
+    host->report("TAKEOFF_SUCCESS", runway_no, flt_num, wait);
 }
 
 int Plane::started() const {
