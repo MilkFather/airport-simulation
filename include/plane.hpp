@@ -1,7 +1,7 @@
 #ifndef PLANE_HPP
 #define PLANE_HPP
 
-#import "delegate.hpp"
+#include "delegate.hpp"
 
 enum Plane_status {null, arriving, departing};
 
@@ -29,7 +29,7 @@ public:
     int flt_num;
     // Plane的生成函数。其中空的那个写出来是为了防止程序错误而设置的保护措施，但是正常运行中不应该调用它。
     Plane();
-    Plane(int flt, int time, Plane_status status, CommunicationProtocal *port);
+    Plane(int flt, int time, Plane_status status, CommunicationProtocal *port, int fuel_start);
     void refuse() const;
     void land(int time) const;
     void fly(int time) const;
@@ -37,6 +37,8 @@ public:
 
     bool isMayday() const;
     void setRunwayNo(int no);
+	int getfuel();
+	void usefuel();
 };
 
 #endif
