@@ -27,9 +27,9 @@ plane.o : $(SRC_PTH)plane.cpp $(HEAD_PTH)plane.hpp $(HEAD_PTH)delegate.hpp
 	$(GPP) -c -o $(BUILD_PTH)$@ $<
 
 flush :
-	@rm -f $(BUILD_PTH)main.o $(BUILD_PTH)airport.o $(BUILD_PTH)plane.o $(BUILD_PTH)runway.o
+	@rm -f -v $(BUILD_PTH)main.o $(BUILD_PTH)airport.o $(BUILD_PTH)plane.o $(BUILD_PTH)runway.o
 
 clean :
-	@rm -f $(BUILD_PTH)main.o $(BUILD_PTH)airport.o $(BUILD_PTH)plane.o $(BUILD_PTH)runway.o $(BIN)airport
+	@rm -f -v $(BUILD_PTH)main.o $(BUILD_PTH)airport.o $(BUILD_PTH)plane.o $(BUILD_PTH)runway.o $(BIN)airport
 
 cleanbuild : | clean build flush
