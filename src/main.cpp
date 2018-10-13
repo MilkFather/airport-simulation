@@ -30,9 +30,13 @@ void run_idle(int time) {
 
 int main() {            // 机场模拟程序
     Airport test(3, 15);
-    test.step();
-    test.step();
-    test.step();
+    test.initialize();
+    test.arrival_rate = 1.38;
+    test.departure_rate = 0.9;
+    for (int i = 0; i < 1000; i++)
+        test.step();
+    //test.step();
+    //test.step();
     test.printSummary();
     return 0;
 }

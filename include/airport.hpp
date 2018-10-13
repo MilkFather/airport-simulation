@@ -15,8 +15,6 @@ private:
 	vector<Runway> runways;
 	int time_elapsed;
 
-	// 用于随机数生成的参数
-	double arrival_rate, departure_rate;  // 产生降落飞机和离场飞机的频率
 	int runway_limit;
 
 	// 统计数据
@@ -27,6 +25,7 @@ private:
 	/* 关于成功：完成了降落或起飞动作的飞机即为成功。留在队列里的飞机和坠毁的飞机不算 */
 
 public:
+	double arrival_rate, departure_rate;  // 产生降落飞机和离场飞机的频率
 	// Airport 的生成函数，在这里定义包含的跑道的数量
 	Airport(int runway_count, int runway_limit);
 	// Airport 模拟前应当进行调用。在这里，所有跑道清空，统计数据全部清零，并且设定好一些参数。

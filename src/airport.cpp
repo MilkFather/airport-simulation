@@ -30,13 +30,20 @@ Airport::Airport(int runway_count, int runway_limit) {
 }
 
 void Airport::initialize() {
-	// TODO
+	srand(time(NULL));
+	time_elapsed = 0;
+	totalPlanes = landingRequestPlanes = departureRequestPlanes = 0;
+	acceptedPlanes = rejectedPlanes = 0;
+	landedPlanes = departuredPlanes = 0;
 }
 
 void Airport::step(int newlanding, int newdeparture) {
 	int runway_count = runways.size();
+
+	landingRequestPlanes += newlanding;
 	for (int p = 0; p < newlanding; p++) {
 		Plane pl(totalPlanes, time_elapsed, arriving, this);
+		totalPlanes++;
 
 		int minused = runways[0].getLandingLength();
 		int minidx = 0;
@@ -49,12 +56,15 @@ void Airport::step(int newlanding, int newdeparture) {
 
 		if (runways[minidx].try_land_queue(pl)) {
 			pl.setRunwayNo(minidx);
-
+			acceptedPlanes++;
+		} else {
+			rejectedPlanes++;
 		}
 	}
-
+	departureRequestPlanes += newdeparture;
 	for (int p = 0; p < newdeparture; p++) {
 		Plane pl(totalPlanes, time_elapsed, departing, this);
+		totalPlanes++;
 
 		int minused = runways[0].getTakeoffLength();
 		int minidx = 0;
@@ -67,22 +77,25 @@ void Airport::step(int newlanding, int newdeparture) {
 
 		if (runways[minidx].try_depart_queue(pl)) {
 			pl.setRunwayNo(minidx);
+			acceptedPlanes++;
+		} else {
+			rejectedPlanes++;
 		}
 	}
 
 	for (int i = 0; i < runway_count; i++) {
 		runways[i].activity(time_elapsed);
 	}
+	time_elapsed++;
 }
 
 int Poisson(double mean) {
-	srand(time(NULL));
 	double limit = exp(-mean);
-    double product = rand() / RAND_MAX;
+    double product = (double)rand() / RAND_MAX;
     int count = 0;
     while (product > limit) {
         count++;
-        product *= rand() / RAND_MAX;
+        product *= (double)rand() / RAND_MAX;
     }
     return count;
 }
