@@ -9,12 +9,20 @@ Plane::Plane(int flt, int time, Plane_status status, CommunicationProtocal *port
     flt_num = flt;
     clock_start = time;
     state = status;
+    host = port; /*
     cout << "Plane number " << flt << " ready to ";
     if (status == arriving)
         cout << "land." << endl;
     else
-        cout << "take off." << endl;
-    host = port;
+        cout << "take off." << endl;*/
+    if (status == arriving) {
+        if (rand() % 10000 == 9999) {
+            Mayday = true;
+        }
+    }
+
+    if (isMayday())
+        host->report("MAYDAY", -1, flt);
 }
 
 Plane::Plane() {

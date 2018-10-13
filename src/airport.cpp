@@ -105,12 +105,13 @@ void Airport::report(string msg, int runway_no, int flt_no, ...) {
 		}
 
 		pl.setRunwayNo(minidx);
-
 		runways[minidx].add_Mayday(pl);
+		cout << "航班" << flt_no << ": MAYDAY, MAYDAY, MAYDAY" << endl;
 	} else if (msg == "CRASH") {
 		// Crash 只会出现在Mayday飞机当中
 		Plane pl;
 		runways[runway_no].removePlane_mayday(flt_no, pl);
+		cout << "很遗憾，航班" << flt_no << "已经坠毁……" << endl;
 	} else if (msg == "LAND_SUCCESS") {
 		int times = va_arg(args, int);
 		landedPlanes++;
