@@ -47,6 +47,46 @@ bool Runway::try_depart_queue(const Plane &current) {
         //in_progress = idle;
     }
     //return in_progress;
+	int size = landing.size();
+	queue<Plane>temp;
+	//landing fuel -1
+	for (int i = 0; i < size; i++) {
+		Plane front = landing.front();
+		front.usefuel();
+		landing.pop();
+		temp.push(front);
+	}
+	for (int i = 0; i < size; i++) {
+		Plane front = temp.front();
+		landing.push(front);
+		temp.pop();
+	}
+	//takeoff fuel -1
+	size = takeoff.size();
+	for (int i = 0; i < size; i++) {
+		Plane front = takeoff.front();
+		front.usefuel();
+		takeoff.pop();
+		temp.push(front);
+	}
+	for (int i = 0; i < size; i++) {
+		Plane front = temp.front();
+		takeoff.push(front);
+		temp.pop();
+	}
+	//mayday fuel -1
+	size = mayday.size();
+	for (int i = 0; i < size; i++) {
+		Plane front = mayday.front();
+		front.usefuel();
+		mayday.pop();
+		temp.push(front);
+	}
+	for (int i = 0; i < size; i++) {
+		Plane front = temp.front();
+		mayday.push(front);
+		temp.pop();
+	}
 }
 
 void Runway::removePlane_takeoff(int flt_no, Plane &pl) {

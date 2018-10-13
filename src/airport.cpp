@@ -19,6 +19,7 @@ void Airport::initialize() {
 	totalPlanes = landingRequestPlanes = departureRequestPlanes = 0;
 	acceptedPlanes = rejectedPlanes = 0;
 	landedPlanes = departuredPlanes = 0;
+	Plane_fuel = 15;
 }
 
 void Airport::step(int newlanding, int newdeparture) {
@@ -26,7 +27,7 @@ void Airport::step(int newlanding, int newdeparture) {
 
 	landingRequestPlanes += newlanding;
 	for (int p = 0; p < newlanding; p++) {
-		Plane pl(totalPlanes, time_elapsed, arriving, this);
+		Plane pl(totalPlanes, time_elapsed, arriving, this,Plane_fuel);
 		totalPlanes++;
 
 		int minused = runways[0].getLandingLength();
@@ -47,7 +48,7 @@ void Airport::step(int newlanding, int newdeparture) {
 	}
 	departureRequestPlanes += newdeparture;
 	for (int p = 0; p < newdeparture; p++) {
-		Plane pl(totalPlanes, time_elapsed, departing, this);
+		Plane pl(totalPlanes, time_elapsed, departing, this,Plane_fuel);
 		totalPlanes++;
 
 		int minused = runways[0].getTakeoffLength();
