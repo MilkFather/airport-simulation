@@ -1,5 +1,3 @@
-#include "runway.hpp"
-#include "plane.hpp"
 #include "airport.hpp"
 #include <iostream>
 
