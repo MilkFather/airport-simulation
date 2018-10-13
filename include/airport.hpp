@@ -39,7 +39,7 @@ public:
 	void printSummary();
 
 	// 供飞机调用
-	void report(string msg, int runway_no, int flt_no, ...);
+	void report(string msg, int flt_no, ...);
 };
 
 #endif

@@ -1,5 +1,6 @@
 #include "plane.hpp"
 #include <iostream>
+#include <random>
 
 using namespace std;
 
@@ -16,13 +17,16 @@ Plane::Plane(int flt, int time, Plane_status status, CommunicationProtocal *port
     else
         cout << "take off." << endl;*/
     if (status == arriving) {
-        if (rand() % 10000 == 9999) {
+        random_device r;
+        mt19937 gen(r());
+    	uniform_int_distribution<> dis(1, 10000);
+        if (dis(gen) == 9999) {
             Mayday = true;
         }
     }
 
     if (isMayday())
-        host->report("MAYDAY", -1, flt);
+        host->report("MAYDAY", flt);
 }
 
 Plane::Plane() {
