@@ -36,6 +36,7 @@ public:
     int started() const;
 
     bool isMayday() const;
+    void setMayday(bool s);
     void setRunwayNo(int no);
 	int getfuel();
 	void usefuel();

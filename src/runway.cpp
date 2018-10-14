@@ -15,6 +15,10 @@ bool Runway::try_land_queue(const Plane &current) {
         return false;
 }
 
+void Runway::force_land_queue(const Plane &current) {
+    landing.push(current);
+}
+
 bool Runway::try_depart_queue(const Plane &current) {
     if (takeoff.size() < queue_limit) {
         takeoff.push(current);

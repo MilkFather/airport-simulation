@@ -2,7 +2,7 @@ BUILD_PTH := ./build/
 HEAD_PTH := ./include/
 SRC_PTH := ./src/
 BIN := ./bin/
-GPP := g++ -std=c++11 -I./include
+GPP := g++ -g -std=c++11 -I./include
 MKDIR := @mkdir -p
 
 

@@ -29,8 +29,15 @@ void Airport::step(int newlanding, int newdeparture) {
 
 	landingRequestPlanes += newlanding;
 	for (int p = 0; p < newlanding; p++) {
-		Plane pl(totalPlanes, time_elapsed, arriving, this,Plane_fuel);
+		Plane pl(totalPlanes, time_elapsed, arriving, this, Plane_fuel);
 		totalPlanes++;
+
+		if (pl.isMayday()) {
+			acceptedPlanes++;
+			//pl.setRunwayNo(0);
+			runways[0].force_land_queue(pl);
+			report("MAYDAY", pl.flt_num, 0);
+		}
 
 		int minused = runways[0].getLandingLength();
 		int minidx = 0;
@@ -50,7 +57,7 @@ void Airport::step(int newlanding, int newdeparture) {
 	}
 	departureRequestPlanes += newdeparture;
 	for (int p = 0; p < newdeparture; p++) {
-		Plane pl(totalPlanes, time_elapsed, departing, this,Plane_fuel);
+		Plane pl(totalPlanes, time_elapsed, departing, this, Plane_fuel);
 		totalPlanes++;
 
 		int minused = runways[0].getTakeoffLength();
@@ -114,9 +121,22 @@ void Airport::report(string msg, int flt_no, ...) {
 
 		pl.setRunwayNo(minidx);
 		runways[minidx].add_Mayday(pl);
-		cout << "航班" << flt_no << ": MAYDAY, MAYDAY, MAYDAY" << endl;
+		cout << "航班" << flt_no << ": MAYDAY, MAYDAY, MAYDAY, FUEL, FUEL" << endl;
 	} else if (msg == "MAYDAY") {
+		Plane pl;
+		int runway_no = va_arg(args, int);
+		int minused = runways[0].getMaydayLength();
+		int minidx = 0;
+		for (int i = 0; i < runways.size(); i++) {
+			if (runways[i].getMaydayLength() < minused) {
+				minused = runways[i].getMaydayLength();
+				minidx = i;
+			}
+		}
 
+		pl.setRunwayNo(minidx);
+		runways[minidx].add_Mayday(pl);
+		cout << "航班" << flt_no << ": MAYDAY, MAYDAY, MAYDAY" << endl;
 	} else if (msg == "CRASH") {
 		// Crash 只会出现在Mayday飞机当中
 		Plane pl;

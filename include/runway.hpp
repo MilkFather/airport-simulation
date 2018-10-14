@@ -21,6 +21,7 @@ public:
     Runway(int limit);
     // 判定给定的飞机是否能插入这个跑道的降落或起飞队列，如果能，顺便就插入了
     bool try_land_queue(const Plane &current);
+    void force_land_queue(const Plane &current);
     bool try_depart_queue(const Plane &current);
     // 进行跑道操作
     /*Runway_activity*/void activity(int time);

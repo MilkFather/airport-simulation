@@ -6,7 +6,7 @@ using namespace std;
 
 // Plane类的实现。可以考虑在现有代码基础上进行更改。
 
-Plane::Plane(int flt, int time,  Plane_status status, CommunicationProtocal *port,int fuel_start ) {
+Plane::Plane(int flt, int time, Plane_status status, CommunicationProtocal *port, int fuel_start) {
     flt_num = flt;
     clock_start = time;
     state = status;
@@ -25,9 +25,6 @@ Plane::Plane(int flt, int time,  Plane_status status, CommunicationProtocal *por
             Mayday = true;
         }
     }
-
-    if (isMayday())
-        host->report("MAYDAY", flt);
 }
 
 Plane::Plane() {
@@ -61,7 +58,11 @@ int Plane::started() const {
 }
 
 bool Plane::isMayday() const {
-    return (Mayday||fuel<=5);
+    return Mayday;
+}
+
+void Plane::setMayday(bool s) {
+    Mayday = s;
 }
 
 void Plane::setRunwayNo(int no) {
@@ -73,4 +74,11 @@ int Plane::getfuel() {
 }
 void Plane::usefuel() {
 	fuel--;
+    if (fuel <= 5 and not Mayday) {
+        Mayday = true;
+        host->report("MAYDAY_FUEL", flt_num, runway_no);
+    }
+    if (fuel <= 0) {
+        host->report("CRASH", flt_num, runway_no);
+    }
 }
