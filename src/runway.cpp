@@ -1,5 +1,6 @@
 #include "runway.hpp"
 #include <iostream>
+#include <cassert>
 
 using namespace std;
 
@@ -27,136 +28,75 @@ bool Runway::try_depart_queue(const Plane &current) {
         return false;
 }
 
-/*Runway_activity*/void Runway::activity(int time) {
-    /*
-    TODO：加入对于Mayday队列的逻辑
-     */
-    //Runway_activity in_progress;
+void Runway::activity(int time) {
     Plane moving;
-    if (!landing.empty()) {
-        // 取降落队列的头，赋值moving，然后对moving进行操作
+    if (!mayday.empty()) {
+        moving = mayday.front();
+        mayday.pop();
+        moving.land(time);
+    } else if (!landing.empty()) {
         moving = landing.front();
-        // 更新状态
-        //in_progress = land;
-        // 将降落队列的头pop掉
         landing.pop();
         moving.land(time);
     } else if (!takeoff.empty()) {
-        // 代码思路类似
         moving = takeoff.front();
-        //in_progress = Runway_activity::takeoff;
         takeoff.pop();
         moving.fly(time);
-    } else {
-        //in_progress = idle;
     }
-    //return in_progress;
-	int size = landing.size();
-	queue<Plane>temp;
-	//landing fuel -1
-	for (int i = 0; i < size; i++) {
-		Plane front = landing.front();
-		front.usefuel();
-		landing.pop();
-		temp.push(front);
-	}
-	for (int i = 0; i < size; i++) {
-		Plane front = temp.front();
-		landing.push(front);
-		temp.pop();
-	}
-	//takeoff fuel -1
-	size = takeoff.size();
-	for (int i = 0; i < size; i++) {
-		Plane front = takeoff.front();
-		front.usefuel();
-		takeoff.pop();
-		temp.push(front);
-	}
-	for (int i = 0; i < size; i++) {
-		Plane front = temp.front();
-		takeoff.push(front);
-		temp.pop();
-	}
-	//mayday fuel -1
-	size = mayday.size();
-	for (int i = 0; i < size; i++) {
-		Plane front = mayday.front();
-		front.usefuel();
-		mayday.pop();
-		temp.push(front);
-	}
-	for (int i = 0; i < size; i++) {
-		Plane front = temp.front();
-		mayday.push(front);
-		temp.pop();
-	}
+    use_fuel_plane();
+}
+
+void Runway::use_fuel_plane() {
+    for (int i = landing.size() - 1; i >= 0; i--) {
+        assert(landing[i].getfuel() >= 6);
+        landing[i].usefuel();
+    }
+    for (int i = mayday.size() - 1; i >= 0; i--) {
+        assert(landing[i].getfuel() >= 0);
+        mayday[i].usefuel();
+    }
 }
 
 void Runway::removePlane_takeoff(int flt_no, Plane &pl) {
-	vector<Plane> temp;
-	int size = takeoff.size();
-	for (int i = 0; i < size; i++) {
-		temp.push_back(takeoff.front());//将队列清空，并转移到一个数组里面，便于检索
-		takeoff.pop();
-	}
-
-	int pos;
-	for (int i = 0; i < size; i++) {
-		if (temp[i].flt_num == flt_no) {//找到所要清除的元素
-			pos = i;//标记位置
-            pl = temp[i];
-		}
-	}
-
-	for (int i = 0; i < size - 1; i++) {
-        if (i != pos)
-		    takeoff.push(temp[i]);//队列复原
-	}
+    for (int i = 0; i < takeoff.size(); i++) {
+        if (takeoff[i].flt_num == flt_no) {
+            pl = takeoff[i];
+            takeoff.del(i);
+        }
+    }
+    /*debug*/
+    for (int i = 0; i < takeoff.size(); i++) {
+        assert(takeoff[i].flt_num != flt_no);
+    }
+    /*end of debug*/
 }
 
 void Runway::removePlane_landing(int flt_no, Plane &pl) {
-	vector<Plane> temp;
-	int size = landing.size();
-	for (int i = 0; i < size; i++) {
-		temp.push_back(landing.front());//将队列清空，并转移到一个数组里面，便于检索
-		landing.pop();
-	}
-
-	int pos;
-	for (int i = 0; i < size; i++) {
-		if (temp[i].flt_num == flt_no) {//找到所要清除的元素
-			pos = i;//标记位置
-            pl = temp[i];
-		}
-	}
-
-	for (int i = 0; i < size - 1; i++) {
-		if (i != pos)
-            landing.push(temp[i]);//队列复原
-	}
+    for (int i = 0; i < landing.size(); i++) {
+        if (landing[i].flt_num == flt_no) {
+            pl = landing[i];
+            landing.del(i);
+        }
+    }
+    /*debug*/
+    for (int i = 0; i < landing.size(); i++) {
+        assert(landing[i].flt_num != flt_no);
+    }
+    /*end of debug*/
 }
 
 void Runway::removePlane_mayday(int flt_no, Plane &pl) {
-	vector<Plane> temp;
-	int size = mayday.size();
-	for (int i = 0; i < size; i++) {
-		temp.push_back(mayday.front()); //将队列清空，并转移到一个数组里面，便于检索
-		mayday.pop();
-	}
-
-	int pos;
-	for (int i = 0; i < size; i++) {
-		if (temp[i].flt_num == flt_no) {//找到所要清除的元素
-			pos = i;//标记位置
-            pl = temp[i];
-		}
-	}
-
-	for (int i = 0; i < size - 1; i++) {
-        if (i != pos)
-		    mayday.push(temp[i]);//队列复原
-	}
+    for (int i = 0; i < mayday.size(); i++) {
+        if (mayday[i].flt_num == flt_no) {
+            pl = mayday[i];
+            mayday.del(i);
+        }
+    }
+    /*debug*/
+    for (int i = 0; i < mayday.size(); i++) {
+        assert(mayday[i].flt_num != flt_no);
+    }
+    /*end of debug*/
 }
 
 int Runway::getRunwayLimit() const {

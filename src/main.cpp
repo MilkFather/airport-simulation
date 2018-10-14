@@ -31,12 +31,13 @@ void run_idle(int time) {
 int main() {            // 机场模拟程序
     Airport test(3, 15);
     test.initialize();
-    test.arrival_rate = 1.78;
-    test.departure_rate = 1.62;
-    for (int i = 0; i < 50000; i++)
+    test.arrival_rate = 1.44;
+    test.departure_rate = 1.21;
+    for (int i = 0; i < 1000; i++)
         test.step();
     //test.step();
     //test.step();
+    cout << endl;
     test.printSummary();
     return 0;
 }

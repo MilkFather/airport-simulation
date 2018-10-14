@@ -40,6 +40,8 @@ public:
     void setRunwayNo(int no);
 	int getfuel();
 	void usefuel();
+    
+    Plane& operator= (const Plane &rhs) noexcept;
 };
 
 #endif

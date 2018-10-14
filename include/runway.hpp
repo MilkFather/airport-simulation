@@ -2,7 +2,7 @@
 #define RUNWAY_HPP
 
 #include "plane.hpp"
-#include <queue>
+#include "exqueue.cpp"
 
 using namespace std;
 
@@ -11,9 +11,9 @@ using namespace std;
 class Runway {
 private:
     // 三个队列：降落队列、起飞队列和Mayday队列。
-    queue<Plane> landing;
-    queue<Plane> takeoff;
-    queue<Plane> mayday;
+    exqueue<Plane> landing;
+    exqueue<Plane> takeoff;
+    exqueue<Plane> mayday;
     int queue_limit;
 
 public:
@@ -25,6 +25,7 @@ public:
     bool try_depart_queue(const Plane &current);
     // 进行跑道操作
     /*Runway_activity*/void activity(int time);
+    void use_fuel_plane();
     // 从跑道的队列中移除指定编号的飞机
 	void removePlane_takeoff(int flt_no, Plane &pl);
 	void removePlane_landing(int flt_no, Plane &pl);

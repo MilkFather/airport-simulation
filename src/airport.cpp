@@ -37,23 +37,23 @@ void Airport::step(int newlanding, int newdeparture) {
 			//pl.setRunwayNo(0);
 			runways[0].force_land_queue(pl);
 			report("MAYDAY", pl.flt_num, 0);
-		}
+        } else {
+            int minused = runways[0].getLandingLength();
+            int minidx = 0;
+            for (int i = 0; i < runway_count; i++) {
+                if (runways[i].getLandingLength() < minused) {
+                    minused = runways[i].getLandingLength();
+                    minidx = i;
+                }
+            }
 
-		int minused = runways[0].getLandingLength();
-		int minidx = 0;
-		for (int i = 0; i < runway_count; i++) {
-			if (runways[i].getLandingLength() < minused) {
-				minused = runways[i].getLandingLength();
-				minidx = i;
-			}
-		}
-
-		if (runways[minidx].try_land_queue(pl)) {
-			pl.setRunwayNo(minidx);
-			acceptedPlanes++;
-		} else {
-			rejectedPlanes++;
-		}
+            pl.setRunwayNo(minidx);
+            if (runways[minidx].try_land_queue(pl)) {
+                acceptedPlanes++;
+            } else {
+                rejectedPlanes++;
+            }
+        }
 	}
 	departureRequestPlanes += newdeparture;
 	for (int p = 0; p < newdeparture; p++) {
@@ -88,12 +88,12 @@ int Poisson(double mean) {
     //double product = (double)rand() / RAND_MAX;
 	random_device r;
 	mt19937 gen(r());
-	uniform_real_distribution<> dis(0.0, 1.0);
-	double product = dis(gen);
+	uniform_int_distribution<> dis(0, 10000);
+	double product = (double)dis(gen) / 10000.0;
     int count = 0;
     while (product > limit) {
         count++;
-        product *= dis(gen) / RAND_MAX;
+        product *= (double)dis(gen) / (10000.0);
     }
     return count;
 }
@@ -125,6 +125,8 @@ void Airport::report(string msg, int flt_no, ...) {
 	} else if (msg == "MAYDAY") {
 		Plane pl;
 		int runway_no = va_arg(args, int);
+        runways[runway_no].removePlane_landing(flt_no, pl);
+
 		int minused = runways[0].getMaydayLength();
 		int minidx = 0;
 		for (int i = 0; i < runways.size(); i++) {
