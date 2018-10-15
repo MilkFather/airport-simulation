@@ -11,7 +11,12 @@ Plane::Plane(int flt, int time, Plane_status status, CommunicationProtocal *port
     this->flt_num = flt;
     this->clock_start = time;
     this->state = status;
-	this->fuel = fuel_start;
+    
+    random_device r;
+    mt19937 gen(r());
+    uniform_int_distribution<> dis((int)(0.6 * fuel_start), (int)(1.4 * fuel_start));
+    this->fuel = dis(gen);
+    
     this->host = port; 
     /*cout << "Plane number " << flt << " ready to ";
     if (status == arriving)
@@ -23,7 +28,7 @@ Plane::Plane(int flt, int time, Plane_status status, CommunicationProtocal *port
         random_device r;
         mt19937 gen(r());
     	uniform_int_distribution<> dis(1, 10000);
-        if (dis(gen) == 9999) {
+        if (dis(gen) == 9999 || this->fuel <= 5) {
             this->Mayday = true;
         }
     }

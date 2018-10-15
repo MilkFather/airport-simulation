@@ -16,16 +16,16 @@ private:
 	vector<Runway> runways;
 	int time_elapsed;
 
-	int runway_limit;
-
 	// 统计数据
 	int totalPlanes, landingRequestPlanes, departureRequestPlanes;  // 全部生成的数量，其中有多少是降落，多少是起飞？
 	int acceptedPlanes, rejectedPlanes;  // 全部生成的飞机当中，有多少被拒绝了，多少被接受了？
 	/* 关于拒绝和接受：拒绝只发生在降落的飞机身上。一般而言，如果所有跑道的降落队列都满了，那么新的请求降落的飞机就会被拒绝。标记了Mayday的飞机除外，它们无条件被接受。 */
 	int landedPlanes, departuredPlanes;  // 成功降落和起飞的飞机数量
 	/* 关于成功：完成了降落或起飞动作的飞机即为成功。留在队列里的飞机和坠毁的飞机不算 */
-	int Plane_fuel;
 public:
+    int Plane_fuel;
+    int runway_limit;
+    
 	double arrival_rate, departure_rate;  // 产生降落飞机和离场飞机的频率
 	// Airport 的生成函数，在这里定义包含的跑道的数量
 	Airport(int runway_count, int runway_limit);
