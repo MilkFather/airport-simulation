@@ -29,14 +29,51 @@ void run_idle(int time) {
 }
 
 int main() {            // 机场模拟程序
-    Airport test(3, 15);
-    test.initialize();
-    test.arrival_rate = 1.38;
-    test.departure_rate = 0.9;
-    for (int i = 0; i < 1000; i++)
-        test.step();
-    //test.step();
-    //test.step();
-    test.printSummary();
-    return 0;
+	int runway_count;
+	int runway_limit;
+	cout << "please input the number of runway:";
+	cin >> runway_count;
+	cout << endl;
+	int end_time;
+	double arrival_rate;
+	double departure_rate;
+	int flight_number = 0;
+	int fuel_start;
+	cout << "please input the fuel of every plane: ";
+	cin >> fuel_start;
+	cout << endl;
+	CommunicationProtocal *port;
+	initialize(end_time, runway_limit, arrival_rate, departure_rate);
+	//Runway test(runway_limit);
+	Airport test(runway_count, runway_limit);
+	for (int current_time = 0; current_time < end_time; current_time++) {//  loop over time intervals
+		 //  current arrival requests
+		int number_arrivals;
+		cout << "please input the arrival requests: ";
+			cin >> number_arrivals;
+		for (int i = 0; i < number_arrivals; i++) {
+			Plane current_plane(flight_number++, current_time, arriving ,port ,fuel_start);
+			if (test.runways[0].try_land_queue(current_plane) != true)
+				current_plane.refuse();
+		}
+		 //  current departure requests
+		int number_departures;
+		cout << "please input the number of the departures: ";
+		cin >> number_departures;
+		cout << endl;
+		for (int j = 0; j < number_departures; j++) {
+			Plane current_plane(flight_number++, current_time, departing,port,fuel_start);
+			if (current_plane.isMayday()) {
+				test.runways[2].mayday.push(current_plane);
+			}
+			if (test.runways[1].try_depart_queue(current_plane) != true)
+				current_plane.refuse();
+		}
+		for (int i = 0; i < runway_count; i++) {
+			test.runways[0].activity(current_time);
+			test.runways[1].activity(current_time);
+			test.runways[2].activity(current_time);
+		}
+	}
+	test.printSummary();
 }

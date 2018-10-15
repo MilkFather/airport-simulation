@@ -13,7 +13,7 @@ using namespace std;
 class Airport: public CommunicationProtocal {
 private:
 	// 虚拟的跑道和虚拟的时间
-	vector<Runway> runways;
+	//vector<Runway> runways;
 	int time_elapsed;
 
 	int runway_limit;
@@ -27,6 +27,7 @@ private:
 	int Plane_fuel;
 public:
 	double arrival_rate, departure_rate;  // 产生降落飞机和离场飞机的频率
+	vector<Runway> runways;
 	// Airport 的生成函数，在这里定义包含的跑道的数量
 	Airport(int runway_count, int runway_limit);
 	// Airport 模拟前应当进行调用。在这里，所有跑道清空，统计数据全部清零，并且设定好一些参数。

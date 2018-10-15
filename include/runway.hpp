@@ -11,12 +11,15 @@ using namespace std;
 class Runway {
 private:
     // 三个队列：降落队列、起飞队列和Mayday队列。
-    queue<Plane> landing;
+    /*queue<Plane> landing;
     queue<Plane> takeoff;
-    queue<Plane> mayday;
+    queue<Plane> mayday;*/
     int queue_limit;
 
 public:
+	queue<Plane> landing;
+	queue<Plane> takeoff;
+	queue<Plane> mayday;
     // 构造函数
     Runway(int limit);
     // 判定给定的飞机是否能插入这个跑道的降落或起飞队列，如果能，顺便就插入了
