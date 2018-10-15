@@ -131,6 +131,17 @@ void act_exit(vector<string> args) {
     exit(0);
 }
 
+void act_help(vector<string> args) {
+    cout << "可用指令: " << endl;
+    cout << "\texit\t\t退出程序" << endl;
+    cout << "\thelp\t\t显示本帮助" << endl;
+    cout << "\treset\t\t重置模拟" << endl;
+    cout << "\trunfor\t\t一次性模拟多个单位时间的运行" << endl;
+    cout << "\tset\t\t设定机场模拟的参数" << endl;
+    cout << "\tshow\t\t显示模拟统计数据" << endl;
+    cout << "\tstep\t\t模拟一个单位时间的运行，可以指定降落和起飞的数量" << endl;
+}
+
 bool isblank(string s) {
     for (int i = 0; i < s.length(); i++) {
         if (s[i] != ' ' and s[i] != '\t' and s[i] != '\0')
@@ -176,6 +187,8 @@ void do_action(vector<string> cmds) {
         act_reset(args);
     } else if (cmd == "exit") {
         act_exit(args);
+    } else if (cmd == "help") {
+        act_help(args);
     } else {
         cout << "未知的指令: " << cmd << endl;
     }
@@ -187,6 +200,7 @@ int main(int argc, char *argv[]) {            // 机场模拟程序
     airport->arrival_rate = arrival_rate;
     airport->departure_rate = departure_rate;
     airport->initialize();
+    cout << "机场模拟准备就绪" << endl << "输入\"help\"查看帮助" << endl;
     while (true) {
         string str;
         vector<string> tokens;
