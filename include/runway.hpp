@@ -17,6 +17,9 @@ private:
     int queue_limit;
 
 public:
+	  queue<Plane> landing;
+	  queue<Plane> takeoff;
+	  queue<Plane> mayday;
     // 构造函数
     Runway(int limit);
     // 判定给定的飞机是否能插入这个跑道的降落或起飞队列，如果能，顺便就插入了
@@ -27,9 +30,9 @@ public:
     /*Runway_activity*/void activity(int time);
     void use_fuel_plane();
     // 从跑道的队列中移除指定编号的飞机
-	void removePlane_takeoff(int flt_no, Plane &pl);
-	void removePlane_landing(int flt_no, Plane &pl);
-	void removePlane_mayday(int flt_no, Plane &pl);
+	  void removePlane_takeoff(int flt_no, Plane &pl);
+	  void removePlane_landing(int flt_no, Plane &pl);
+	  void removePlane_mayday(int flt_no, Plane &pl);
 
     // 信息方法。
     int getRunwayLimit() const;
