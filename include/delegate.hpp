@@ -7,7 +7,7 @@ using namespace std;
 
 class CommunicationProtocal {
 public:
-    virtual void report(string msg, int runway_no, int flt_no, ...) = 0;
+    virtual void report(string msg, int flt_no, ...) = 0;
 };
 
 #endif

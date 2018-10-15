@@ -36,9 +36,12 @@ public:
     int started() const;
 
     bool isMayday() const;
+    void setMayday(bool s);
     void setRunwayNo(int no);
 	int getfuel();
 	void usefuel();
+    
+    Plane& operator= (const Plane &rhs) noexcept;
 };
 
 #endif

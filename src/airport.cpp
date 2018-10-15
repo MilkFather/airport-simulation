@@ -4,6 +4,9 @@
 #include <iostream>
 #include <cmath>
 #include <cstdarg>
+#include <random>
+
+using namespace std;
 
 Airport::Airport(int runway_count, int runway_limit) {
 	runways.clear();
@@ -14,7 +17,6 @@ Airport::Airport(int runway_count, int runway_limit) {
 }
 
 void Airport::initialize() {
-	srand(time(NULL));
 	time_elapsed = 0;
 	totalPlanes = landingRequestPlanes = departureRequestPlanes = 0;
 	acceptedPlanes = rejectedPlanes = 0;
@@ -27,28 +29,35 @@ void Airport::step(int newlanding, int newdeparture) {
 
 	landingRequestPlanes += newlanding;
 	for (int p = 0; p < newlanding; p++) {
-		Plane pl(totalPlanes, time_elapsed, arriving, this,Plane_fuel);
+		Plane pl(totalPlanes, time_elapsed, arriving, this, Plane_fuel);
 		totalPlanes++;
 
-		int minused = runways[0].getLandingLength();
-		int minidx = 0;
-		for (int i = 0; i < runway_count; i++) {
-			if (runways[i].getLandingLength() < minused) {
-				minused = runways[i].getLandingLength();
-				minidx = i;
-			}
-		}
-
-		if (runways[minidx].try_land_queue(pl)) {
-			pl.setRunwayNo(minidx);
+		if (pl.isMayday()) {
 			acceptedPlanes++;
-		} else {
-			rejectedPlanes++;
-		}
+			//pl.setRunwayNo(0);
+			runways[0].force_land_queue(pl);
+			report("MAYDAY", pl.flt_num, 0);
+        } else {
+            int minused = runways[0].getLandingLength();
+            int minidx = 0;
+            for (int i = 0; i < runway_count; i++) {
+                if (runways[i].getLandingLength() < minused) {
+                    minused = runways[i].getLandingLength();
+                    minidx = i;
+                }
+            }
+
+            pl.setRunwayNo(minidx);
+            if (runways[minidx].try_land_queue(pl)) {
+                acceptedPlanes++;
+            } else {
+                rejectedPlanes++;
+            }
+        }
 	}
 	departureRequestPlanes += newdeparture;
 	for (int p = 0; p < newdeparture; p++) {
-		Plane pl(totalPlanes, time_elapsed, departing, this,Plane_fuel);
+		Plane pl(totalPlanes, time_elapsed, departing, this, Plane_fuel);
 		totalPlanes++;
 
 		int minused = runways[0].getTakeoffLength();
@@ -76,11 +85,15 @@ void Airport::step(int newlanding, int newdeparture) {
 
 int Poisson(double mean) {
 	double limit = exp(-mean);
-    double product = (double)rand() / RAND_MAX;
+    //double product = (double)rand() / RAND_MAX;
+	random_device r;
+	mt19937 gen(r());
+	uniform_int_distribution<> dis(0, 10000);
+	double product = (double)dis(gen) / 10000.0;
     int count = 0;
     while (product > limit) {
         count++;
-        product *= (double)rand() / RAND_MAX;
+        product *= (double)dis(gen) / (10000.0);
     }
     return count;
 }
@@ -89,12 +102,30 @@ void Airport::step() {
 	step(Poisson(arrival_rate), Poisson(departure_rate));
 }
 
-void Airport::report(string msg, int runway_no, int flt_no, ...) {
+void Airport::report(string msg, int flt_no, ...) {
 	va_list args;
 	va_start(args, flt_no);
-	if (msg == "MAYDAY") {
+	if (msg == "MAYDAY_FUEL") {
 		Plane pl;
+		int runway_no = va_arg(args, int);
 		runways[runway_no].removePlane_landing(flt_no, pl);
+
+		int minused = runways[0].getMaydayLength();
+		int minidx = 0;
+		for (int i = 0; i < runways.size(); i++) {
+			if (runways[i].getMaydayLength() < minused) {
+				minused = runways[i].getMaydayLength();
+				minidx = i;
+			}
+		}
+
+		pl.setRunwayNo(minidx);
+		runways[minidx].add_Mayday(pl);
+		cout << "航班" << flt_no << ": MAYDAY, MAYDAY, MAYDAY, FUEL, FUEL" << endl;
+	} else if (msg == "MAYDAY") {
+		Plane pl;
+		int runway_no = va_arg(args, int);
+        runways[runway_no].removePlane_landing(flt_no, pl);
 
 		int minused = runways[0].getMaydayLength();
 		int minidx = 0;
@@ -111,12 +142,15 @@ void Airport::report(string msg, int runway_no, int flt_no, ...) {
 	} else if (msg == "CRASH") {
 		// Crash 只会出现在Mayday飞机当中
 		Plane pl;
+		int runway_no = va_arg(args, int);
 		runways[runway_no].removePlane_mayday(flt_no, pl);
 		cout << "很遗憾，航班" << flt_no << "已经坠毁……" << endl;
 	} else if (msg == "LAND_SUCCESS") {
+		int runway_no = va_arg(args, int);
 		int times = va_arg(args, int);
 		landedPlanes++;
 	} else if (msg == "TAKEOFF_SUCCESS") {
+		int runway_no = va_arg(args, int);
 		int times = va_arg(args, int);
 		departuredPlanes++;
 	}
